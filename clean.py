@@ -3,14 +3,14 @@ import numpy as np
 import sys
 import os
 
-BLOCK_SIZE = 20
-THRESHOLD = 30
-BLUR = 1    ##mora neparan broj
+BLOCK_SIZE = 10
+THRESHOLD = 20
+BLUR = 5    # mora neparan broj
 
 
 def preprocess(image: np.ndarray) -> np.ndarray:
     """Apply median and Gaussian blur, then invert."""
-    ##image = cv2.medianBlur(image, 3)
+    # image = cv2.medianBlur(image, 3)
     image = cv2.GaussianBlur(image, (BLUR, BLUR), 0)
     return cv2.bitwise_not(image)
 
@@ -22,8 +22,10 @@ def postprocess(image: np.ndarray) -> np.ndarray:
 
 def get_block_index(image_shape, yx, block_size):
     """Return the Y and X indices for a given block."""
-    y = np.arange(max(0, yx[0] - block_size), min(image_shape[0], yx[0] + block_size))
-    x = np.arange(max(0, yx[1] - block_size), min(image_shape[1], yx[1] + block_size))
+    y = np.arange(max(0, yx[0] - block_size),
+                  min(image_shape[0], yx[0] + block_size))
+    x = np.arange(max(0, yx[1] - block_size),
+                  min(image_shape[1], yx[1] + block_size))
     return np.meshgrid(y, x, indexing='ij')
 
 
@@ -53,9 +55,10 @@ def process_image_file(filename: str):
 
     image_in = preprocess(image_in)
     image_out = block_image_process(image_in, BLOCK_SIZE)
-    ##image_out = postprocess(image_out)
+    # image_out = postprocess(image_out)
 
-    out_path = os.path.join(os.path.dirname(filename), f"bin_{os.path.basename(filename)}")
+    out_path = os.path.join(os.path.dirname(filename),
+                            f"bin_{os.path.basename(filename)}")
     cv2.imwrite(out_path, image_out)
     print(f"Saved: {out_path}")
 
